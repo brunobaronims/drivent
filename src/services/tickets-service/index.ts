@@ -11,6 +11,7 @@ async function getTicketTypes(): Promise<GetTicketTypesResult[]>{
     const formattedTicketTypes = ticketTypes.map((ticket) => {
         return exclude(ticket, "createdAt", "updatedAt");
     });
+    console.log(formattedTicketTypes);
     
     return formattedTicketTypes;
 };

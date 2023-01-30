@@ -2,7 +2,6 @@ import { prisma } from "@/config";
 
 async function getTicketTypes() {
     const tickets = prisma.ticketType.findMany();
-    console.log(tickets);
 
     return tickets;
 };

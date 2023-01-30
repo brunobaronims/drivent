@@ -21,11 +21,9 @@ export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
         
         return res.status(httpStatus.OK).send(ticket);
     } catch (e) {
-        if (e.name === 'NotEnrolledError')
+        if (e.name === 'NotEnrolledError' || 'NoTicketError')
             return res.status(httpStatus.NOT_FOUND).send(e.message);
-        
-        if (e.name === 'NoTicketError')
-            return res.status(httpStatus.NOT_FOUND).send(e.message);
+    
         return res.sendStatus(httpStatus.NO_CONTENT);
     }
 }

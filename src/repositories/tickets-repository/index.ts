@@ -48,11 +48,20 @@ function createTicket(params: CreateTicketParams) {
 
 export type CreateTicketParams = Omit<Ticket, "id" | "createdAt" | "updatedAt">;
 
+function getTicketById(id: number) {
+    return prisma.ticket.findFirst({
+        where: {
+            id
+        }
+    })
+};
+
 const ticketsRepository = {
     getTicketTypes,
     getUserTicket,
     getUserTicketType,
-    createTicket
+    createTicket,
+    getTicketById
 };
 
 export default ticketsRepository;

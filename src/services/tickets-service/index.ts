@@ -1,20 +1,22 @@
-import { notFoundError } from "@/errors";
-import { noTicketError } from "@/errors/no-ticket-error";
-import { noTicketTypeIdError } from "@/errors/no-ticket-type-id-error";
+import {
+    notFoundError,
+    noTicketError,
+    noTicketTypeIdError
+} from "@/errors";
 import { notEnrolledError } from "@/errors/not-enrolled-error";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import ticketsRepository from "@/repositories/tickets-repository";
 import { exclude } from "@/utils/prisma-utils";
 import { Ticket, TicketStatus, TicketType } from "@prisma/client";
 
-async function getTicketTypes(): Promise<GetTicketTypesResult[]>{
+async function getTicketTypes(): Promise<GetTicketTypesResult[]> {
     const ticketTypes = await ticketsRepository.getTicketTypes();
-    if (!ticketTypes) throw notFoundError;
+    if (!ticketTypes) throw notFoundError();
 
     const formattedTicketTypes = ticketTypes.map((ticket) => {
         return exclude(ticket, "createdAt", "updatedAt");
     });
-    
+
     return formattedTicketTypes;
 };
 
@@ -37,39 +39,39 @@ async function getUserTicket(userId: number): Promise<GetUserTicketAndCreateTick
 
 async function createTicket(ticketTypeId: number, userId: number): Promise<GetUserTicketAndCreateTicketResult> {
     const enrollmentId = await getEnrollmentIdByUserId(userId);
-    
-    if (!ticketTypeId) throw noTicketTypeIdError;
+
+    if (!ticketTypeId) throw noTicketTypeIdError();
     const ticketType = await getTicketTypeByTypeId(ticketTypeId);
 
-    const newTicket = await ticketsRepository.createTicket({ticketTypeId, enrollmentId, status: TicketStatus.RESERVED});
+    const newTicket = await ticketsRepository.createTicket({ ticketTypeId, enrollmentId, status: TicketStatus.RESERVED });
 
     const formattedTicket = {
         ...newTicket,
         ticketType: ticketType
     };
-    
+
     return formattedTicket;
 };
 
-export type GetUserTicketAndCreateTicketResult = Partial<Ticket> & {ticketType: TicketType};
+export type GetUserTicketAndCreateTicketResult = Partial<Ticket> & { ticketType: TicketType };
 
 async function getEnrollmentIdByUserId(userId: number) {
     const enrollmentId = (await enrollmentRepository.findWithAddressByUserId(userId)).id;
-    if (!enrollmentId) throw notEnrolledError;
+    if (!enrollmentId) throw notEnrolledError();
 
     return enrollmentId;
 }
 
 async function getTicketByEnrollmentId(enrollmentId: number) {
     const ticket = await ticketsRepository.getUserTicket(enrollmentId);
-    if (!ticket) throw noTicketError;
-    
+    if (!ticket) throw noTicketError();
+
     return ticket;
 }
 
 async function getTicketTypeByTypeId(ticketTypeId: number) {
     const ticketType = await ticketsRepository.getUserTicketType(ticketTypeId);
-    if (!ticketType) throw notFoundError;
+    if (!ticketType) throw notFoundError();
 
     return ticketType;
 }

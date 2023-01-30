@@ -5,3 +5,6 @@ export * from "./invalid-email-error";
 export * from "./not-found-error";
 export * from "./unauthorized-error";
 export * from "./request-error";
+export * from './no-ticket-error';
+export * from './no-ticket-type-id-error';
+export * from './no-ticket-id.error';

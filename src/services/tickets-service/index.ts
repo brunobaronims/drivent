@@ -63,14 +63,14 @@ async function getEnrollmentIdByUserId(userId: number) {
 }
 
 async function getTicketByEnrollmentId(enrollmentId: number) {
-    const ticket = await ticketsRepository.getUserTicket(enrollmentId);
+    const ticket = await ticketsRepository.getTicketByEnrollmentId(enrollmentId);
     if (!ticket) throw noTicketError();
 
     return ticket;
 }
 
 async function getTicketTypeByTypeId(ticketTypeId: number) {
-    const ticketType = await ticketsRepository.getUserTicketType(ticketTypeId);
+    const ticketType = await ticketsRepository.getTicketTypeById(ticketTypeId);
     if (!ticketType) throw notFoundError();
 
     return ticketType;

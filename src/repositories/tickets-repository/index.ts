@@ -8,7 +8,7 @@ function getTicketTypes() {
     return tickets;
 };
 
-function getUserTicketType(typeId: number) {
+function getTicketTypeById(typeId: number) {
     const ticketType = prisma.ticketType.findFirst({
         where: {
             id: Number(typeId)
@@ -18,7 +18,7 @@ function getUserTicketType(typeId: number) {
     return ticketType;
 }
 
-function getUserTicket(enrollmentId: number) {
+function getTicketByEnrollmentId(enrollmentId: number) {
     const ticket = prisma.ticket.findFirst({
         where: {
             enrollmentId: enrollmentId
@@ -58,8 +58,8 @@ function getTicketById(id: number) {
 
 const ticketsRepository = {
     getTicketTypes,
-    getUserTicket,
-    getUserTicketType,
+    getTicketByEnrollmentId,
+    getTicketTypeById,
     createTicket,
     getTicketById
 };

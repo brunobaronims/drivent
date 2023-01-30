@@ -6,7 +6,6 @@ import httpStatus from "http-status";
 export async function getPaymentInfo(req: AuthenticatedRequest, res: Response) {
     const { userId } = req;
     const { ticketId } = req.query;
-    console.log(ticketId);
 
     try {
         const paymentInfo = await paymentsService
@@ -25,3 +24,31 @@ export async function getPaymentInfo(req: AuthenticatedRequest, res: Response) {
                 .send('Id do ticket não está associado ao usuário');
     }
 };
+
+export async function postPayment(req: AuthenticatedRequest, res: Response) {
+    const { userId } = req;
+    const {
+        ticketId,
+        cardData
+    } = req.body;
+
+    try {
+        const newPayment = await paymentsService
+            .createPayment(Number(ticketId), { issuer: cardData.issuer, number: cardData.number }, userId);
+        
+            return res.status(httpStatus.OK).send(newPayment);
+    } catch (e) {
+        if (e.name === 'InvalidTicketIdError')
+            return res.status(httpStatus.NOT_FOUND).send(e.message);
+
+        if ((e.name === 'NoTicketIdError') || (e.name ==='NoCardDataError')) {
+            return res.status(httpStatus.BAD_REQUEST).send(e.message);
+        }
+
+        if (e.name === 'UnauthorizedError')
+            {
+                console.log('entrei2');
+                return res.status(httpStatus.UNAUTHORIZED)
+                .send('Id do ticket não está associado ao usuário');}
+    }
+}

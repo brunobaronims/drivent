@@ -5,8 +5,7 @@ import httpStatus from "http-status";
 import { unauthorizedError } from "@/errors";
 
 export async function getTicketTypes(req: AuthenticatedRequest, res: Response) {
-    const { userId } = req;
-    if (!userId) throw unauthorizedError;
+    if (!req) throw unauthorizedError;
 
     try {
         const ticketTypes = ticketsService.getTicketTypes();
@@ -16,3 +15,16 @@ export async function getTicketTypes(req: AuthenticatedRequest, res: Response) {
         return res.sendStatus(httpStatus.NO_CONTENT);
     }
 };
+
+export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
+    const { userId } = req;
+    if (!userId) throw unauthorizedError;
+
+    try {
+        const ticket = ticketsService.getUserTicket(userId);
+        
+        return res.status(httpStatus.OK).send(ticket);
+    } catch (e) {
+        return res.sendStatus(httpStatus.NO_CONTENT);
+    }
+}

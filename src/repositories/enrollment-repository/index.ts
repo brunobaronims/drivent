@@ -1,5 +1,6 @@
 import { prisma } from "@/config";
 import { Enrollment } from "@prisma/client";
+import dayjs from 'dayjs';
 
 async function findWithAddressByUserId(userId: number) {
   return prisma.enrollment.findFirst({
@@ -15,12 +16,21 @@ async function upsert(
   createdEnrollment: CreateEnrollmentParams,
   updatedEnrollment: UpdateEnrollmentParams,
 ) {
+  const formattedCreatedDate = dayjs(createdEnrollment.birthday).toDate();
+  const formattedUpdatedData = dayjs(updatedEnrollment.birthday).toDate();
+
   return prisma.enrollment.upsert({
     where: {
       userId,
     },
-    create: createdEnrollment,
-    update: updatedEnrollment,
+    create: {
+      ...createdEnrollment,
+      birthday: formattedCreatedDate
+    },
+    update: {
+      ...updatedEnrollment,
+      birthday: formattedUpdatedData
+    },
   });
 }
 
